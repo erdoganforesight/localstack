@@ -600,8 +600,11 @@ def expected_change_set_status():
 
 
 def create_and_await_stack(**kwargs):
+    print("----- create_and_await_stack kwargs:", kwargs)
     cloudformation = aws_stack.connect_to_service("cloudformation")
+    print("----- create_and_await_stack before **kwargs:", **kwargs)
     response = cloudformation.create_stack(**kwargs)
+    print("----- create_and_await_stack response:", response)
     assert response["ResponseMetadata"]["HTTPStatusCode"] == 200
     result = await_stack_completion(kwargs["StackName"])
     return result
@@ -1728,6 +1731,8 @@ class CloudFormationTest(unittest.TestCase):
         s3_client.put_object(Bucket=bucket, Key=key, Body=create_zip_file(path, get_content=True))
 
         template = load_file(os.path.join(THIS_FOLDER, "templates", "cdktemplate.json"))
+        
+        print("----- test_cdk_template")
 
         create_and_await_stack(
             StackName=stack_name,
